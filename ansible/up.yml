@@ -1,0 +1,42 @@
+- name: Install k8sInfra Helm Chart and Deploy Apps with Port Forwarding
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Add SigNoz Helm repo
+      command: helm repo add signoz https://charts.signoz.io
+
+    - name: Update Helm repos
+      command: helm repo update
+
+    - name: Install k8s-infra with overridden values
+      command: >
+        helm install k8s-infra signoz/k8s-infra
+        -n platform --create-namespace
+        -f ../values/override-values.yaml
+
+    - name: Wait for k8s-infra otel-agent pod to be ready
+      command: >
+        kubectl wait --for=condition=ready pod -l app.kubernetes.io/component=otel-agent
+        -n platform --timeout=120s
+
+    - name: Deploy HotROD Deployment and Service
+      shell: |
+        kubectl apply -f ../apps/hotrod/deployment.yaml -n platform
+        kubectl apply -f ../apps/hotrod/service.yaml -n platform
+
+    - name: Wait for HotROD pod to be ready
+      command: kubectl wait --for=condition=ready pod -l app=otel-demo -n platform --timeout=60s
+
+    - name: Port forward HotROD service (8082 → 8080)
+      shell: |
+        nohup kubectl port-forward svc/otel-demo -n platform 8082:8080 > /dev/null 2>&1 &
+      async: 1
+      poll: 0
+
+    - name: Deploy RollDice Deployment and Service (no port forward)
+      shell: |
+        kubectl apply -f ../apps/rolldice/deployment.yaml -n platform
+        kubectl apply -f ../apps/rolldice/service.yaml -n platform
+
+    - name: Wait for RollDice pod to be ready
+      command: kubectl wait --for=condition=ready pod -l app=rolldice -n platform --timeout=60s

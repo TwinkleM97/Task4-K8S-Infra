@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: otel-demo
+  namespace: platform
+  labels:
+    app: otel-demo
+spec:
+  containers:
+    - name: otel-demo
+      image: jaegertracing/example-hotrod:latest
+      env:
+        - name: OTEL_EXPORTER_OTLP_ENDPOINT
+          value: "http://k8s-infra-otel-agent:4318"
+        - name: OTEL_EXPORTER_OTLP_PROTOCOL
+          value: "http/protobuf"
+        - name: OTEL_RESOURCE_ATTRIBUTES
+          value: "service.name=otel-demo,service.namespace=demo"
+        - name: OTEL_TRACES_EXPORTER
+          value: "otlp"
+        - name: OTEL_METRICS_EXPORTER
+          value: "none"

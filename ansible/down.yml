@@ -1,0 +1,18 @@
+- name: Uninstall k8sInfra Helm Chart and Apps
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Delete HotROD (otel-demo) pod
+      command: kubectl delete pod otel-demo -n platform --ignore-not-found
+
+    - name: Delete RollDice deployment
+      command: kubectl delete deployment rolldice -n platform --ignore-not-found
+
+    - name: Delete RollDice service
+      command: kubectl delete service rolldice -n platform --ignore-not-found
+
+    - name: Uninstall k8s-infra
+      command: helm uninstall k8s-infra -n platform
+
+    - name: Delete platform namespace
+      command: kubectl delete ns platform --ignore-not-found
