@@ -1,6 +1,3 @@
-# Task4-K8S-Infra
-In Class Task 4 - Monitoring and Logging
-
 # Task 4 - K8s Infra Monitoring with SigNoz
 
 This project demonstrates how to deploy telemetry infrastructure in Kubernetes using the **SigNoz `k8s-infra` Helm chart**, and send logs, traces, and metrics from your apps to a SigNoz instance running separately via Docker.
