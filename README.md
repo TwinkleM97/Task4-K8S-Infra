@@ -37,6 +37,10 @@ git clone https://github.com/SigNoz/signoz.git
 cd signoz/deploy/docker
 docker-compose up -d
 
+# Return back to the main folder
+
+cd ../../../..
+
 # 2. Install Ansible
 sudo apt update
 sudo apt install -y ansible
