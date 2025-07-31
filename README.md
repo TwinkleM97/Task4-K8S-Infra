@@ -39,7 +39,8 @@ docker-compose up -d
 
 # Return back to the main folder
 
-cd ../../../..
+cd "$(git rev-parse --show-toplevel)"
+cd ..
 
 # 2. Install Ansible
 sudo apt update
@@ -59,7 +60,6 @@ ansible-playbook ansible/up.yml
 
 # 6. Port forward RollDice app and SigNoz UI
 kubectl port-forward svc/rolldice -n platform 8088:5000
-kubectl port-forward svc/signoz-frontend -n platform 8080:3301
 ```
 
 ---
