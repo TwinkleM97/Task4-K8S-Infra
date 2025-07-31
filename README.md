@@ -62,25 +62,37 @@ kubectl port-forward svc/rolldice -n platform 8088:5000
 
 ## Screenshots and Observations
 
-### Docker containers running for SigNoz
+### SigNoz Services Overview
+Shows detected services (`frontend`, `query-service`, etc.) proving that OpenTelemetry is exporting correctly.
+![Services Overview](screenshots/services-overview.png)
 
-![Docker ps](screenshots/docker-ps.png)
+### Trace List View with RollDice Service
+Demonstrates that multiple traces are received for the `/dispatch` operation.
+![Trace Explorer](screenshots/traces-explorer-rolldice.png)
 
-### Kubernetes pods showing apps deployed
+### Detailed Trace View (Single RollDice Request)
+Drill-down view of a single trace showing span breakdown and timings.
+![Detailed Trace](screenshots/trace-detail-view-rolldice.png)
 
-![Pods list](screenshots/kubectl-get-pods.png)
+### Custom Metric Name Selection (dice.rolls)
+Confirms custom metric `dice.rolls` is successfully pushed to SigNoz.
+![Metric Dropdown](screenshots/metric-name-dropdown.png)
 
-### Traces from RollDice app visible in SigNoz
+### RollDice Trace Detail - Waterfall View
+Visual representation of spans in the RollDice trace with timestamps and latency.
+![RollDice Trace](screenshots/rolldice-trace-waterfall.png)
 
-![Traces Rolldice](screenshots/trace-rolldice.png)
+### HotROD Timeline - Service Activity
+Demonstrates high-level timeline view of HotROD spans across services.
+![HotROD Timeline](screenshots/hotrod-timeline-service.png)
 
-### Service detected: `rolldice` in SigNoz dashboard
+### HotROD Trace Detail - Waterfall View
+Full breakdown of spans within a single HotROD trace.
+![HotROD Trace](screenshots/hotrod-trace-waterfall.png)
 
-![Service Detected](screenshots/service-detected.png)
-
-### RollDice request metrics in Metrics Explorer
-
-![Metrics Explorer](screenshots/metrics-explorer.png)
+### Terminal Output Showing Trace Logs
+Terminal output showing that requests and exceptions (if any) are logged and traced.
+![Terminal Logs](screenshots/terminal-output.png)
 
 ---
 
