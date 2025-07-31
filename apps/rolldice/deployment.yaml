@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: rolldice
-          image: rolldice:fixed
+          image: twinklem97/rolldice:latest
           ports:
             - containerPort: 5000
           env:
