@@ -4,35 +4,20 @@ This project demonstrates how to deploy telemetry infrastructure in Kubernetes u
 
 ---
 
-## Purpose
+## Project Goals
 
-The goal of this task was to:
-- Deploy the `k8s-infra` Helm chart to Kubernetes using Ansible
-- Configure telemetry to flow from Kubernetes to a standalone SigNoz instance
-- Monitor a sample instrumented application (`rolldice`) and a demo app (`HotROD`)
-- Use SigNoz to observe traces and metrics in a central dashboard
-
----
-
-## What We Achieved
-
-- Installed SigNoz via Docker (`signoz/deploy/docker`) on the local machine
-- Deployed Kubernetes using `kind`
-- Automated `k8s-infra` Helm chart install using Ansible (`up.yaml`)
-- Deployed and instrumented two applications:
-  - `HotROD` (pre-instrumented demo app)
-  - `RollDice` (custom Flask app with OpenTelemetry)
-- Successfully forwarded telemetry from Kubernetes to the external SigNoz
-- Accessed:
-  - RollDice API at [http://localhost:8088](http://localhost:8088)
-  - SigNoz dashboard at [http://localhost:8080](http://localhost:8080)
+1. Run SigNoz stack using Docker Compose
+2. Deploy `k8s-infra` Helm chart using Ansible
+3. Forward Kubernetes telemetry to SigNoz
+4. Monitor `HotROD` demo app and custom `RollDice` Flask app
+5. Verify logs, traces, and metrics in SigNoz UI
 
 ---
 
-## Setup Commands
+## Prerequisites
 
 ```bash
-# 1. Clone SigNoz and run Docker-based backend
+# Clone SigNoz repo and run Docker Compose
 git clone https://github.com/SigNoz/signoz.git
 cd signoz/deploy/docker
 docker-compose up -d
@@ -41,41 +26,65 @@ docker-compose up -d
 
 cd "$(git rev-parse --show-toplevel)"
 cd ..
+```
 
-# 2. Install Ansible
+---
+
+## Set Up Kubernetes and Ansible
+
+```bash
 sudo apt update
 sudo apt install -y ansible
 
-# 3. Install kind
+# Install kind CLI
 curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.22.0/kind-linux-amd64
 chmod +x ./kind
 sudo mv ./kind /usr/local/bin/kind
 
-# 4. Create kind cluster
+# Create kind cluster
 kind create cluster --name kind
 kubectl get nodes
 
-# 5. Run Ansible playbook to install k8s-infra and apps
+# Run Ansible playbook to deploy k8s-infra and apps
 ansible-playbook ansible/up.yml
+```
 
-# 6. Port forward RollDice app and SigNoz UI
+---
+
+## Port Forwarding (Access Services)
+
+```bash
+# RollDice Flask app
 kubectl port-forward svc/rolldice -n platform 8088:5000
 ```
 
 ---
 
-## SigNoz Dashboards
+## Screenshots and Observations
 
-- You can view collected telemetry in SigNoz under:
-  - **Traces** → Filter by `service.name = rolldice`
-  - **Metrics** → View request count, latency, and errors
-  - **Logs** (if configured)
+### Docker containers running for SigNoz
+
+![Docker ps](screenshots/docker-ps.png)
+
+### Kubernetes pods showing apps deployed
+
+![Pods list](screenshots/kubectl-get-pods.png)
+
+### Traces from RollDice app visible in SigNoz
+
+![Traces Rolldice](screenshots/trace-rolldice.png)
+
+### Service detected: `rolldice` in SigNoz dashboard
+
+![Service Detected](screenshots/service-detected.png)
+
+### RollDice request metrics in Metrics Explorer
+
+![Metrics Explorer](screenshots/metrics-explorer.png)
 
 ---
 
-## Cleanup
-
-To uninstall all resources:
+## Tear Down
 
 ```bash
 ansible-playbook ansible/down.yml
@@ -85,7 +94,7 @@ docker-compose down
 
 ---
 
-## Notes
+## References
 
-- This setup uses `signoz/k8s-infra` to ship telemetry **from K8s to external SigNoz**
-- The SigNoz frontend runs via Docker and is **not** deployed inside Kubernetes
+- [SigNoz GitHub](https://github.com/SigNoz/signoz)
+- [OpenTelemetry Collector Helm Chart](https://github.com/open-telemetry/opentelemetry-helm-charts)
