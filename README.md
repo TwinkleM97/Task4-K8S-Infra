@@ -57,6 +57,19 @@ ansible-playbook ansible/up.yml
 # RollDice Flask app
 kubectl port-forward svc/rolldice -n platform 8088:5000
 ```
+---
+
+## Accessing Services via URLs
+
+Once services are deployed and port-forwarding is configured, access them using the following formats:
+
+| Service           | Port   | URL Format                                                                   | Description                       |
+|-------------------|--------|------------------------------------------------------------------------------|-----------------------------------|
+| **SigNoz UI**     | 8080   | https://<your-codespace-id>-8080.app.github.dev/                             | Monitor traces, logs, metrics     |
+| **HotROD App**    | 8082   | https://<your-codespace-id>-8082.app.github.dev/                             | OpenTelemetry demo app            |
+| **RollDice App**  | 8088   | https://<your-codespace-id>-8088.app.github.dev/rolldice                     | Custom trace + metric Flask app   |
+
+> Replace `<your-codespace-id>` with your actual GitHub Codespace prefix, as seen in your browser’s address bar.
 
 ---
 
